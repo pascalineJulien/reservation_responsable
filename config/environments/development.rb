@@ -58,5 +58,8 @@ config.webpacker.check_yarn_integrity = true
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
   config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.raise_delivery_errors = true
   config.client_email_sender = "test_client_sender"
+
+  config.assets.digest = false
 end

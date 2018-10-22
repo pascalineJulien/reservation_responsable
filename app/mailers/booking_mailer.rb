@@ -1,104 +1,103 @@
 class BookingMailer < ApplicationMailer
 
-  DEFAULT_AMBASSADOR_COMPANY_IDS = [479,1997,145, 165]
-  ambassador_company_id
-  def thank_you_email(options)      
+ KNOWN_LOCALE = [:fr,:en]
+
+  def mail_boilerplate(options, action, mailer=self)
+    @mailer = mailer
+    @mailer_name = mailer.class.name.underscore 
     @options = options
-    @counter = compute_counter
-    @ambassador_company_name = compute_company_name
     @action = action
-    @ambassador = compute_ambassador_name
-    @ambassador_company_id ||= compute_ambassador_id
-    @partial_header ||= partial_header
-    I18n.with_locale(get_locale) do 
-      subject = get_subject
-      to = get_to_address
-      reply_to = get_reply_to_address
-      from = get_from_address
-      bcc = get_bcc_address
-      cc = get_cc_address
-
+    @source_id ||= load_source_id
+    @ambassador ||= load_ambassador
+    message = I18n.with_locale(user_locale) do 
       message = mail(
-        to: to,
-        cc: cc,
-        bcc: bcc,
-        reply_to: reply_to,
-        subject: subject,
-        from: from
+        to: to_addr,
+        subject: get_subject,
+        from: from_addr,
+        css: :email_boilerplate
       )
-
-      message
     end
+    message
   end
 
-  def compute_other_ambassador_company_ids
-    DEFAULT_AMBASSADOR_COMPANY_IDS.select{|id| id != @ambassador_company_id }
+  def to_addr
+    @to_addr ||= load_to_addr
   end
 
-  def testimony(company_id)
-    "#{company_id}_thank_you_testimony"
+  def load_to_addr
+    "to@toto.com" #self.options[:to]
   end
 
-  def can_render_testimony
-    File.exists?("app/view/booking_mailer/_#{company_id}_thank_you_testimony")
+  def can_select_template_as_other_ambassador?(other_ambassador_id)
+    File.exists?(load_ambassador_template_path(other_ambassador_id))
   end
- 
 
-  def compute_ambassador_name
-    "Sébastien Bras"
+
+  def ambassador_template_path
+    @ambassador_template ||= load_ambassador_template_path
+  end
+
+  def platform_locale
+    KNOWN_LOCALE.include?(user_locale) ? user_locale : :en
+  end
+
+
+  def counter
+    @counter ||= load_counter
+  end
+
+  def load_counter
+    @options[:counter]
+  end
+
+  def load_source_id
+    1544 || @options[:source_id]
+  end
+
+  def load_ambassador
+    Ambassador.where(source_id: @source_id).try(&:first)
+  end
+
+  def from_addr
+    @from_addr ||= load_from_addr
+  end
+
+  def load_from_addr
+    @options[:from_addr] || Rails.configuration.client_email_sender
+  end
+
+  def load_other_ambassador_template_paths
+    the_choosen_ones = []
+    need_to_continue = other_company_ids.count > 0
+    the_choosen_ones
+  end
+
+  def company_name
+    @company_name ||= compute_company_name
   end
 
   def compute_company_name
-    "Bras"  
+    ambassador.company_name
   end
 
-  def compute_ambassador_id
-    479
+  def ambassador_id
+    @ambassador_id ||= compute_ambassador_id
   end
 
-  def action
-    @action ||= "thank_you"
-  end
-
-  def partial_header
-    "#{@ambassador_company_id}_#{action}_header"
-  end
-
-  def get_reply_to_address
-    nil
-  end
   def get_subject
     "Thank you"
     #I18n.t("mailer.#{action}.subject", restaurant_name: @restaurant_name)
+  end
+
+  def user_locale
+    @user_locale ||= get_locale
   end
 
   def get_locale
     @options.has_key?(:user_locale) ? @options[:user_locale] : I18n.locale
   end
 
-  def compute_restaurant_name
-    @options.has_key?(:restaurant_name) ? @options[:restaurant_name] : ""
-  end
-  
-
-  def compute_counter
-    @options.has_key?(:counter) ? @options[:counter] : nil
-  end
-
-  
-  def get_from_address
-    @options.has_key?(:from) ? @options[:from] : Rails.configuration.client_email_sender
-  end
-
-  def get_to_address
-     @options.has_key?(:to) ? @options[:to] : "to@test.com"
-  end
-
-  def get_cc_address
-    nil
-  end
-
-  def get_bcc_address
-    nil
+  def can_load_header?
+    false
   end
 end
