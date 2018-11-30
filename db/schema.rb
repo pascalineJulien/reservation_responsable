@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181008125701) do
+ActiveRecord::Schema.define(version: 20181022172718) do
 
   create_table "ambassador_translations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci" do |t|
     t.integer "ambassador_id", null: false
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20181008125701) do
     t.string "lastname"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email"
   end
 
 end

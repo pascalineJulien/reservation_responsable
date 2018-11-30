@@ -1,0 +1,6 @@
+
+fr:
+  client_mailer:
+    thank_you:
+      subject:
+        "Merci"

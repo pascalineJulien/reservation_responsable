@@ -1,5 +1,5 @@
 class API < Grape::API
   prefix 'api'
   version 'v1', using: :path
-  mount Booking::Data
+  mount Partners::Bookings
 end

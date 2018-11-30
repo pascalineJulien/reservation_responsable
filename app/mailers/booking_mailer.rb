@@ -25,7 +25,7 @@ class BookingMailer < ApplicationMailer
   end
 
   def load_to_addr
-    "to@toto.com" #self.options[:to]
+    self.options[:to]
   end
 
   def can_select_template_as_other_ambassador?(other_ambassador_id)
@@ -51,7 +51,7 @@ class BookingMailer < ApplicationMailer
   end
 
   def load_source_id
-    1544 || @options[:source_id]
+    @options[:source_id]
   end
 
   def load_ambassador
@@ -63,13 +63,17 @@ class BookingMailer < ApplicationMailer
   end
 
   def load_from_addr
-    @options[:from_addr] || Rails.configuration.client_email_sender
+    compute_sender_address || Rails.configuration.client_email_sender
   end
 
   def load_other_ambassador_template_paths
     the_choosen_ones = []
     need_to_continue = other_company_ids.count > 0
     the_choosen_ones
+  end
+
+  def compute_sender_address
+    ambassador.try(:email)
   end
 
   def company_name
@@ -85,8 +89,7 @@ class BookingMailer < ApplicationMailer
   end
 
   def get_subject
-    "Thank you"
-    #I18n.t("mailer.#{action}.subject", restaurant_name: @restaurant_name)
+    I18n.t("mailer.#{action}.subject")
   end
 
   def user_locale

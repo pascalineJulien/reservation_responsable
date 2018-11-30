@@ -34,6 +34,8 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 
 gem 'grape'
+gem "awesome_print"
+
 
 gem "haml-rails", "~> 1.0"
 
