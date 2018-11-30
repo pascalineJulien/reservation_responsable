@@ -41,6 +41,8 @@ gem "haml-rails", "~> 1.0"
 
 gem 'globalize', '~> 5.1.0'
 
+# Settings
+gem 'choices'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -48,7 +50,16 @@ group :development, :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
-  gem "letter_opener"  
+  gem "letter_opener" 
+  gem 'rspec-rails', '~> 3.8'
+
+  # Guard
+  gem 'guard-rspec'
+  gem 'guard-spring'
+  gem 'guard-spinach'
+  gem "guard-bundler", ">= 1.0.0"
+  gem "guard-pow", ">= 1.0.0"
+  
 end
 
 group :development do

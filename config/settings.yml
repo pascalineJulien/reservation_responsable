@@ -1,0 +1,22 @@
+defaults: &defaults
+  #bo available locales
+  available_locales:
+    - :fr
+    - :en
+  available_mailer_locales:
+    - :fr
+    - :en
+
+  client_email_sender: "contact@reservation_responsable.fr"
+
+test:
+  <<: *defaults
+
+development:
+  <<: *defaults
+
+production:
+  <<: *defaults
+  
+
+

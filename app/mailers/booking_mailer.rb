@@ -1,7 +1,5 @@
 class BookingMailer < ApplicationMailer
 
- KNOWN_LOCALE = [:fr,:en]
-
   def mail_boilerplate(options, action, mailer=self)
     @mailer = mailer
     @mailer_name = mailer.class.name.underscore 
@@ -38,7 +36,7 @@ class BookingMailer < ApplicationMailer
   end
 
   def platform_locale
-    KNOWN_LOCALE.include?(user_locale) ? user_locale : :en
+    Rails.configuration.available_mailer_locales.include?(user_locale) ? user_locale : :en
   end
 
 
@@ -55,7 +53,7 @@ class BookingMailer < ApplicationMailer
   end
 
   def load_ambassador
-    Ambassador.where(source_id: @source_id).try(&:first)
+    Ambassador.where(source_id: self.source_id).try(&:first)
   end
 
   def from_addr
@@ -97,7 +95,7 @@ class BookingMailer < ApplicationMailer
   end
 
   def get_locale
-    @options.has_key?(:user_locale) ? @options[:user_locale] : I18n.locale
+    self.options.has_key?(:user_locale) ? self.options[:user_locale] : I18n.locale
   end
 
   def can_load_header?

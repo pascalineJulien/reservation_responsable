@@ -33,6 +33,9 @@ COPY Gemfile /srv/app/Gemfile
 COPY Gemfile.lock /srv/app/Gemfile.lock
 RUN bundle install
 
+COPY ./docker/entrypoint.sh /
+RUN chmod a+x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 
 #COPY bundle_install.sh /

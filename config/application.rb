@@ -21,5 +21,9 @@ module App
 
     config.i18n.default_locale = :en
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+
+
+    config.from_file 'settings.yml'
+    
   end
 end

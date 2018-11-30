@@ -1,4 +1,10 @@
-version: '3'
+version: '3.4'
+
+x-database-common-variables: &database-common-variables
+    MYSQL_ROOT_PASSWORD: root
+    MYSQL_USER: rr_user 
+    MYSQL_PASSWORD: rr_password
+
 services:
   db:
     image: mysql:latest
@@ -7,10 +13,8 @@ services:
     ports:
       - "3306:3306"    
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      <<: *database-common-variables
       MYSQL_DATABASE: rr_development
-      MYSQL_USER: rr_user 
-      MYSQL_PASSWORD: rr_password
 
   webpacker:
     build: .
@@ -30,3 +34,15 @@ services:
     depends_on:
       - db
       - webpacker
+ 
+  guard:
+    image: reservation_responsable_web:latest
+    command: guard #bundle exec guard --no-bundler-warning --no-interactions
+    volumes:
+      - .:/srv/app
+    environment:
+      <<: *database-common-variables
+      MYSQL_DATABASE: app_test
+      RAILS_ENV: test
+    depends_on:
+      - db
